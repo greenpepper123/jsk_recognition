@@ -191,6 +191,8 @@ jsk_pcl_nodelet(src/color_filter_nodelet.cpp
   "jsk_pcl/RGBColorFilter" "rgb_color_filter")
 jsk_pcl_nodelet(src/color_filter_nodelet.cpp
   "jsk_pcl/HSIColorFilter" "hsi_color_filter")
+jsk_pcl_nodelet(src/ground_filter_nodelet.cpp
+  "jsk_pcl/SimpleGroundFilter" "simple_ground_filter")
 jsk_pcl_nodelet(src/euclidean_cluster_extraction_nodelet.cpp
   "jsk_pcl/EuclideanClustering" "euclidean_clustering")
 jsk_pcl_nodelet(src/cluster_point_indices_decomposer_nodelet.cpp
