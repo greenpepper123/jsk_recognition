@@ -329,7 +329,14 @@
     </description>
   </class>
 
-  <class name="jsk_pcl/ResizePointsPublisher" type="jsk_pcl_ros::ResizePointsPublisher"
+  <class name="jsk_pcl/SimpleGroundFilter" type="jsk_pcl_ros::SimpleGroundFilter"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      filter ground
+    </description>
+  </class>
+
+ <class name="jsk_pcl/ResizePointsPublisher" type="jsk_pcl_ros::ResizePointsPublisher"
          base_class_type="nodelet::Nodelet">
     <description>
       Resize PointCloud

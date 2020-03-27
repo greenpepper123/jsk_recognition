@@ -68,6 +68,9 @@ namespace jsk_pcl_ros
     message_filters::Subscriber<sensor_msgs::PointCloud2> sub_input_;
     message_filters::Subscriber<PCLIndicesMsg> sub_indices_;
     ros::Publisher pub_;
+
+    ConditionPtr cond_;
+    GroundFilter();
     virtual void updateCondition() = 0;
     virtual void filter(const sensor_msgs::PointCloud2ConstPtr &input);
     virtual void filter(const sensor_msgs::PointCloud2ConstPtr &input,
@@ -85,7 +88,7 @@ namespace jsk_pcl_ros
   {
   public:
   protected:
-    int z_max_;
+    double z_max_;
     virtual void updateCondition();
   private:
     virtual void onInit();

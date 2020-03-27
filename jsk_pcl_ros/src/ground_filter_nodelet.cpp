@@ -39,31 +39,28 @@
 namespace jsk_pcl_ros
 {
 
-  /*** RGB ***/
 
   void SimpleGroundFilter::onInit()
   {
-    z_max_ = 0.02;
+    z_max_ = 0.01;
 
     GroundFilter::onInit();
   }
 
   void SimpleGroundFilter::updateCondition()
   {
-    ConditionPtr condp (new pcl::ConditionAnd<pcl::PointXYZ> ());
+    ComparisonPtr gt (new Comparison("z", pcl::ComparisonOps::GT, z_max_));
 
-    { 
-      ConditionPtr cond (new pcl::ConditionAnd<pcl::PointXYZ> ());
-      ComparisonPtr ge (new Comparison ("z", pcl::ComparisonOps::GE, z_max_));
-      cond->addComparison (ge);
-      condp->addCondition(cond);
-    }
-
-    filter_instance_.setCondition (condp);
+    cond_->addComparison(gt);
+   
+    filter_instance_.setCondition(cond_);
   }
 
   
   /*** GroundFilter ***/
+  template <class FComparison>
+  GroundFilter<FComparison>::GroundFilter() : cond_(new pcl::ConditionAnd<pcl::PointXYZ>()) {}
+
   template <class FComparison>
   void GroundFilter<FComparison>::filter(const sensor_msgs::PointCloud2ConstPtr &input,
                               const PCLIndicesMsg::ConstPtr& indices)
@@ -80,10 +77,14 @@ namespace jsk_pcl_ros
       vindices.reset(new std::vector<int> (indices->indices));
       filter_instance_.setIndices(vindices);
     }
+    // This setCOndition needed but reason wakattenai
+    filter_instance_.setCondition(cond_);
     filter_instance_.filter(tmp_out);
     if (tmp_out.points.size() > 0) {
       toROSMsg(tmp_out, out);
       pub_.publish(out);
+    } else {
+      NODELET_INFO("All points were removed");
     }
   }
 
@@ -123,6 +124,7 @@ namespace jsk_pcl_ros
     }
     else {
       sub_input_.registerCallback(&GroundFilter::filter, this);
+      NODELET_INFO("subscribe");
     }
   }
 

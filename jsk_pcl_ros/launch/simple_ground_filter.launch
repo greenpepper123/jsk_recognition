@@ -1,0 +1,36 @@
+<!-- -*- mode: xml -*- -->
+<launch>
+  <!--
+  $ roslaunch openni_launch openni.launch    ;; start kinect camera
+  $ rosrun rqt_reconfigure rqt_reconfigure   ;; parameter settings
+  $ roslaunch jsk_pcl_ros groundfilter_color_filter.launch DEFAULT_NAMESPACE:=/camera/depth_registered INPUT:=points
+  
+  * subscribe camera/depth_registered/groundfilter_output
+  * subscribe tf and find /target
+  -->
+  <arg name="INPUT" default="pcl_input"/>
+  <arg name="CENTROID_FRAME" default="target"/>
+  <arg name="DEFAULT_NAMESPACE" default="simple_ground_filter"/>
+  <arg name="FILTER_NAME_SUFFIX" default=""/>
+  <arg name="OUTPUT" default="groundfilter_output$(arg FILTER_NAME_SUFFIX)"/>
+
+  <arg name="create_manager" default="true" />
+  <arg name="manager" default="groundfilter_filter_manager$(arg FILTER_NAME_SUFFIX)" />
+
+  <group ns="$(arg DEFAULT_NAMESPACE)">
+    <node if="$(arg create_manager)"
+          pkg="nodelet" type="nodelet" name="$(arg manager)"
+          args="manager" output="screen"/>
+
+    <node pkg="nodelet" type="nodelet" name="ground_filter$(arg FILTER_NAME_SUFFIX)"
+          args="load jsk_pcl/SimpleGroundFilter $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg INPUT)" />
+      <remap from="~output" to="$(arg OUTPUT)" />
+      <rosparam>
+        use_indices: false
+        keep_organized: false
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
